@@ -6,7 +6,8 @@ from process_empresas import process_empresas
 from process_estabelecimentos import process_estabelecimentos
 from process_motivos import process_motivos
 from process_municipios import process_municipios
-from process_paises import process_paises  # Importando o novo script
+from process_paises import process_paises
+from process_qualificacoes import process_qualificacoes  # Importando o novo script
 
 def find_latest_data_folder(base_path):
     # Encontra a pasta de data mais recente
@@ -77,6 +78,14 @@ def process_all_categories(base_path, db):
             process_paises(paises_folder_path, db)
         else:
             print(f"Pasta {paises_folder_path} não encontrada!")
+
+        # Processar "Qualificacoes"
+        qualificacoes_folder_path = os.path.join(plain_files_path, "Qualificacoes")
+        if os.path.exists(qualificacoes_folder_path):
+            print(f"Processando arquivos na pasta {qualificacoes_folder_path}...")
+            process_qualificacoes(qualificacoes_folder_path, db)
+        else:
+            print(f"Pasta {qualificacoes_folder_path} não encontrada!")
     else:
         print("Nenhuma pasta de data encontrada!")
 

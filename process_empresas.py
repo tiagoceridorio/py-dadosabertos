@@ -1,15 +1,20 @@
 import os
 import csv
 from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
 from mongo_connection import get_collection
 
 def process_single_csv(csv_file_path, db):
     collection = get_collection(db, "empresas")
     print(f"Lendo arquivo {csv_file_path}...")
 
+    # Contar o número de linhas no arquivo para a barra de progresso
+    total_lines = sum(1 for line in open(csv_file_path, mode='r', encoding='ISO-8859-1', errors='ignore'))
+    
     # Abrir o CSV sem cabeçalho e mapear campos por posição
     with open(csv_file_path, mode='r', encoding='ISO-8859-1', errors='ignore') as file:
         reader = csv.reader(file, delimiter=';')
+        progress_bar = tqdm(total=total_lines, desc=f"Processando {os.path.basename(csv_file_path)}", position=csv_files.index(csv_file_path))
 
         for row in reader:
             # Mapear os campos conforme as posições especificadas no CSV
@@ -35,14 +40,12 @@ def process_single_csv(csv_file_path, db):
                         "ente_federativo_responsavel": ente_federativo_responsavel
                     }
                     collection.insert_one(document)
-                    print(f"Documento inserido: {document}")
-                else:
-                    print(f"CNPJ Básico {cnpj_basico} já existe. Registro ignorado.")
-            else:
-                print(f"Registro ignorado por conter campos vazios: {row}")
+            progress_bar.update(1)
+        progress_bar.close()
 
 def process_empresas(category_folder_path, db):
     # Obter todos os arquivos CSV na pasta da categoria, em ordem alfabética
+    global csv_files
     csv_files = sorted([os.path.join(category_folder_path, f) for f in os.listdir(category_folder_path) if f.endswith('.csv')])
 
     # Processar arquivos CSV em paralelo

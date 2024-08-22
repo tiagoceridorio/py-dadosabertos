@@ -2,8 +2,8 @@ import os
 import csv
 from mongo_connection import get_collection
 
-def process_naturezas(category_folder_path, db):
-    collection = get_collection(db, "naturezas")
+def process_cnaes(category_folder_path, db):
+    collection = get_collection(db, "cnaes")
     
     # Obter todos os arquivos CSV na pasta da categoria, em ordem alfabética
     csv_files = sorted([f for f in os.listdir(category_folder_path) if f.endswith('.csv')])
@@ -17,8 +17,8 @@ def process_naturezas(category_folder_path, db):
             reader = csv.reader(file, delimiter=';')
             
             for row in reader:
-                codigo = row[0]  # Exemplo: Código da natureza jurídica (posição 0)
-                descricao = row[1]  # Exemplo: Descrição da natureza jurídica (posição 1)
+                codigo = row[0]  # Exemplo: Código do CNAE (posição 0)
+                descricao = row[1]  # Exemplo: Descrição do CNAE (posição 1)
 
                 # Verificar se os campos não estão vazios ou nulos
                 if codigo and descricao:

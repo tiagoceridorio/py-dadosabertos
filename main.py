@@ -1,6 +1,7 @@
 import os
 from mongo_connection import get_mongo_client, get_database
 from process_naturezas import process_naturezas
+from process_cnaes import process_cnaes  # Importando o novo script
 
 def find_latest_data_folder(base_path):
     # Encontra a pasta de data mais recente
@@ -16,14 +17,21 @@ def process_all_categories(base_path, db):
         # Caminho para a pasta plain_files dentro da data mais recente
         plain_files_path = os.path.join(base_path, latest_folder, "plain_files")
         
-        # Caminho para a pasta da categoria "Naturezas"
+        # Processar "Naturezas"
         naturezas_folder_path = os.path.join(plain_files_path, "Naturezas")
-        
         if os.path.exists(naturezas_folder_path):
             print(f"Processando arquivos na pasta {naturezas_folder_path}...")
             process_naturezas(naturezas_folder_path, db)
         else:
             print(f"Pasta {naturezas_folder_path} não encontrada!")
+
+        # Processar "Cnaes"
+        cnaes_folder_path = os.path.join(plain_files_path, "Cnaes")
+        if os.path.exists(cnaes_folder_path):
+            print(f"Processando arquivos na pasta {cnaes_folder_path}...")
+            process_cnaes(cnaes_folder_path, db)
+        else:
+            print(f"Pasta {cnaes_folder_path} não encontrada!")
     else:
         print("Nenhuma pasta de data encontrada!")
 
